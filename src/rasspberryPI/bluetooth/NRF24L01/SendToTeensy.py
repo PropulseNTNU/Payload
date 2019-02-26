@@ -1,42 +1,72 @@
-
 import RPi.GPIO as GPIO
 from lib_nrf24 import NRF24
 import time
 import spidev
 
-GPIO.setmode(GPIO.BCM)
+def bleSetup():
+	GPIO.setmode(GPIO.BCM)
 
-pipes = [[0xE8, 0xE8, 0xF0, 0xF0, 0xE1], [0xF0, 0xF0, 0xF0, 0xF0, 0xE1]]
+	pipes = [[0xE8, 0xE8, 0xF0, 0xF0, 0xE1], [0xF0, 0xF0, 0xF0, 0xF0, 0xE1]]
 
-radio = NRF24(GPIO, spidev.SpiDev())
-radio.begin(0, 17)
+	conn = NRF24(GPIO, spidev.SpiDev())
+	conn.begin(0, 17)
 
-radio.setPayloadSize(32)
-radio.setChannel(0x76)
-radio.setDataRate(NRF24.BR_1MBPS)
-radio.setPALevel(NRF24.PA_MIN)
+	conn.setPayloadSize(32)
+	conn.setChannel(0x76) #endre paa kanal for aa legge til flere bleenheter
+	conn.setDataRate(NRF24.BR_1MBPS)
+	conn.setPALevel(NRF24.PA_MIN)
 
-radio.setAutoAck(True)
-radio.enableDynamicPayloads()
-radio.enableAckPayload()
+	conn.setAutoAck(True)
+	conn.enableDynamicPayloads()
+	conn.enableAckPayload()
 
-radio.openReadingPipe(1, pipes[1])
-radio.printDetails()
-radio.startListening()
+	conn.openWritingPipe(pipes[0])
+	conn.openReadingPipe(1, pipes[1])
+	conn.printDetails()
+	# conn.startListening()
+	return conn
 
-while(1):
-    # ackPL = [1]
-    while not radio.available(0):
-        time.sleep(1 / 100)
-    receivedMessage = []
-    radio.read(receivedMessage, radio.getDynamicPayloadSize())
-    print("Received: {}".format(receivedMessage))
+def sendMessage(message, radio):
+	radio.write(message)
+	print("Sent the message: {}".format(message))
+	
+def recieveMessage(conn):
+	start = time.time()
+	conn.startListening()
+	
+	while not conn.available(0):
+	   time.sleep(1 / 100)
+	   if time.time() - start > 2:
+	       print("Timed out.")
+	       break
+	
+	receivedMessage = []
+	conn.read(receivedMessage, conn.getDynamicPayloadSize())
+	print("Received: {}".format(receivedMessage))
+	
+	print("Translating the receivedMessage into unicode characters")
+	string = ""
+	for n in receivedMessage:
+		# Decode into standard unicode set
+	    if (n >= 32 and n <= 126):
+	        string += chr(n)
+	print("Out received message decodes to: {}".format(string))
+	conn.stopListening()
+	
 
-    print("Translating the receivedMessage into unicode characters")
-    string = ""
-    for n in receivedMessage:
-        # Decode into standard unicode set
-        if (n >= 32 and n <= 126):
-            string += chr(n)
-    print("Out received message decodes to: {}".format(string))
-    # time.sleep(100)
+
+def main():
+	conn = bleSetup()
+
+	message = list("21234567890123456789012345678901")
+	while len(message) < 32:
+		message.append(0)
+
+	while(1):
+		sendMessage(message, conn)
+		#recieveMessage(conn)
+				
+		time.sleep(1)
+	
+main()
+
