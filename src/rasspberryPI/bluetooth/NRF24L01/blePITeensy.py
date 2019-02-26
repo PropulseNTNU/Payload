@@ -26,10 +26,13 @@ def bleSetup():
 	# conn.startListening()
 	return conn
 
+
 def sendMessage(message, radio):
 	radio.write(message)
 	print("Sent the message: {}".format(message))
+	time.sleep(1)
 	
+
 def recieveMessage(conn):
 	start = time.time()
 	conn.startListening()
@@ -54,15 +57,28 @@ def recieveMessage(conn):
 	conn.stopListening()
 	
 
+def sendSensorData(conn):
+	file = open("testSensorData.txt", 'r')
+	textfile = file.readlines()[1:]
+	file.close
+	for row in textfile: 	
+		for element in row.split():
+			message = []
+			message.append(element)
+			#while len(message) < 32:
+			#	message.append(0)
+			#print(message)
+			sendMessage(element, conn)
+	
+	
 
 def main():
 	conn = bleSetup()
 
-	message = list("21234567890123456789012345678901")
-	while len(message) < 32:
-		message.append(0)
-
+	message = list("Done")
+	
 	while(1):
+		sendSensorData(conn)
 		sendMessage(message, conn)
 		#recieveMessage(conn)
 				
