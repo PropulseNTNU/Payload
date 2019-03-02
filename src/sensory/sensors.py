@@ -17,35 +17,35 @@ import adafruit_bmp280
 ###### IMU ########
 ###################
 
-SETTINGS_FILE = "RTIMULib"
 
-print("Using settings file " + SETTINGS_FILE + ".ini")
-if not os.path.exists(SETTINGS_FILE + ".ini"):
+
+def IMU_init():    
+    global imu,s,SETTINGS_FILE
+    SETTINGS_FILE = "RTIMULib"
+    print("Using settings file " + SETTINGS_FILE + ".ini")
+    if not os.path.exists(SETTINGS_FILE + ".ini"):
       print("Settings file does not exist, will be created")
+    s = RTIMU.Settings(SETTINGS_FILE)
+    imu = RTIMU.RTIMU(s)
+    print("IMU Name: " + imu.IMUName())
 
-s = RTIMU.Settings(SETTINGS_FILE)
-imu = RTIMU.RTIMU(s)
+    if (not imu.IMUInit()):
+        print("IMU Init Failed")
+        sys.exit(1)
+    else:
+        print("IMU Init Succeeded")
+    # this is a good time to set any fusion parameters
+    imu.setSlerpPower(0.02)
+    imu.setGyroEnable(True)
+    imu.setAccelEnable(True)
+    imu.setCompassEnable(True)
+    poll_interval = imu.IMUGetPollInterval()
+    print("Poll Intervall: %dmS\n" % poll_interval)
 
-print("IMU Name: " + imu.IMUName())
 
-if (not imu.IMUInit()):
-    print("IMU Init Failed")
-    sys.exit(1)
-else:
-    print("IMU Init Succeeded")
-
-# this is a good time to set any fusion parameters
-
-imu.setSlerpPower(0.02)
-imu.setGyroEnable(True)
-imu.setAccelEnable(True)
-imu.setCompassEnable(True)
-
-poll_interval = imu.IMUGetPollInterval()
-print("Poll Intervall: %dmS\n" % poll_interval)
 
 file = open("cockballs.txt","a")
-file.write("timestamp\troll\tpitch\tyaw\tacceleration x\tacceleration y\tacceleration z\tcompass x\tcompass y\tcompass z\tt\n")
+file.write("timestamp\troll\tpitch\tyaw\tacceleration x\tacceleration y\tacceleration z\tcompass x\tcompass y\tcompass z\ttemperature\thumidity\taltitude\n")
 # Vibration = acceleration z
 
 def Read_IMU():
@@ -81,43 +81,22 @@ def Read_IMU():
     return True
     #time.sleep(poll_interval*1.0/1000.0)
 
-'''
-fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1)
-xs = []
-ys = []'''
-def animate(xs,ys):
-    accelx, accely, accelz = imu.getAccel()
-    accelz = accelz / (2*3.14)*1000
-    print(accelz)
-    xs.append(datetime.now().strftime('%H:%M:%S.%f'))
-    ys.append(accelz)
-    xs = xs[-20:]
-    ys = ys[-20:]
-    ax.clear()
-    ax.plot(xs,ys)
-    plt.xticks(rotation=45, ha='right')
-    plt.subplots_adjust(bottom=0.30)
-    plt.title('MPU-9255 vibration Z over time')
-    plt.ylabel('Hertz')
 
 
 ####################
 ####### BMP280 #####
 ####################
 
-
-#i2c = busio.I2C(board.SCL, board.SDA)
-
-#bme280 = adafruit_bme280.Adafruit_BME280_I2C(i2c)
+def BMP280_init(sea_level_pressure): # change this to match the location's pressure (hPa) at sea level
+    i2c = busio.I2C(board.SCL, board.SDA)
+    bme280 = adafruit_bme280.Adafruit_BME280_I2C(i2c)
+    bme280.sea_level_pressure = 1013.25
 
 # OR create library object using our Bus SPI port
 #spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
 #bme_cs = digitalio.DigitalInOut(board.D10)
 #bme280 = adafruit_bme280.Adafruit_BME280_SPI(spi, bme_cs)
 
-# change this to match the location's pressure (hPa) at sea level
-#bme280.sea_level_pressure = 1013.25
 
 
 def Read_BMP():
@@ -128,15 +107,10 @@ def Read_BMP():
 
 
 if  __name__ == "__main__":
+    IMU_init()
+    #bmp280_init()
     while True:
         if imu.IMURead():
             Read_IMU()
             file.write("\n")
         time.sleep(4/1000)
-        '''fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1)
-        xs = []
-        ys = []
-        animate(xs,ys)
-        #ani = animation.FuncAnimation(fig, animate, fargs=(xs,ys), interval = 5)
-        plt.show()'''
