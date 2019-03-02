@@ -3,9 +3,15 @@ from lib_nrf24 import NRF24
 import time
 import spidev
 
-def bleSetup():
-	GPIO.setmode(GPIO.BCM)
+global linecounter
+numberOfSensors = 3 
 
+
+def bleSetup():
+	global linecounter
+	linecounter = 1
+	GPIO.setmode(GPIO.BCM)
+	
 	pipes = [[0xE8, 0xE8, 0xF0, 0xF0, 0xE1], [0xF0, 0xF0, 0xF0, 0xF0, 0xE1]]
 
 	conn = NRF24(GPIO, spidev.SpiDev())
@@ -27,8 +33,8 @@ def bleSetup():
 	return conn
 
 
-def sendMessage(message, radio):
-	radio.write(message)
+def sendMessage(message, conn):
+	conn.write(message)
 	print("Sent the message: {}".format(message))
 	time.sleep(1)
 	
@@ -58,18 +64,41 @@ def recieveMessage(conn):
 	
 
 def sendSensorData(conn):
-	file = open("testSensorData.txt", 'r')
-	textfile = file.readlines()[1:]
+	global linecounter
+	if linecounter < 0:
+		print("Error in linecount from file")
+		
+	try: 
+		file = open("testSensorData.txt", 'r')
+		textfile = file.readlines()[linecounter:]
+	except IOError:
+		print("Error in opening file")
 	file.close
-	for row in textfile: 	
-		for element in row.split():
-			message = []
-			message.append(element)
-			#while len(message) < 32:
-			#	message.append(0)
-			#print(message)
-			sendMessage(element, conn)
 	
+	if textfile == []:
+		print("file is empty")												
+		return
+	element = 0	
+	i = 0
+	sensorID = 0
+	while(element != '\n'):
+		message = []
+		element = textfile[0][i]
+		while(element != '\t' and element != '\n'):	
+			element = textfile[0][i]
+			
+			if element != '\t' and element != '\n':
+				message.append(element)
+			i += 1
+		stringtoint = sensorID
+		message.append(str(sensorID))
+		while len(message) < 32:
+				message.append(0)
+		
+		sensorID += 1
+		sendMessage(message, conn)
+	
+	linecounter += 1
 	
 
 def main():
@@ -79,7 +108,7 @@ def main():
 	
 	while(1):
 		sendSensorData(conn)
-		sendMessage(message, conn)
+		#sendMessage(message, conn)
 		#recieveMessage(conn)
 				
 		time.sleep(1)
