@@ -2,11 +2,10 @@
 
 #include<SPI.h>
 #include<RF24.h>
-#include<string.h>
+
 
 // CE, CSN pins
-RF24 conn(6, 7);
-//SPI.setSCK(27); 
+RF24 conn(6, 7); 
 const int numberOfSensors = 4;
 String fullMessage[numberOfSensors]; //message sent to the telemetry
 
@@ -19,7 +18,7 @@ void initMessage(){
 void setupBle(void){
   while(!Serial);
   Serial.begin(9600);
-  
+  SPI.setSCK(27); //JAN
   conn.begin();
   
   conn.setPALevel(RF24_PA_MAX);

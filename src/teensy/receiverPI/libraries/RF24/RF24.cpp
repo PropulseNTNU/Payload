@@ -599,7 +599,7 @@ bool RF24::begin(void)
   
   #elif defined(LITTLEWIRE)
     pinMode(csn_pin,OUTPUT);
-    _SPI.begin();
+	_SPI.begin();
     csn(HIGH);
   #else
     // Initialize pins
@@ -639,7 +639,7 @@ bool RF24::begin(void)
 
   // check for connected module and if this is a p nRF24l01 variant
   //
-  if( setDataRate( RF24_250KBPS ) )
+  if( setDaStaRate( RF24_250KBPS ) )
   {
     p_variant = true ;
   }
@@ -651,7 +651,8 @@ bool RF24::begin(void)
   
   // Then set the data rate to the slowest (and most reliable) speed supported by all
   // hardware.
-  setDataRate( RF24_1MBPS ) ;
+  setDataRate( RF24_1MBPS ) ; //JAN
+  _SPI.setSCK(27); 
 
   // Initialize CRC and request 2-byte (16bit) CRC
   //setCRCLength( RF24_CRC_16 ) ;
@@ -675,7 +676,7 @@ bool RF24::begin(void)
   flush_tx();
 
   powerUp(); //Power up by default when begin() is called
-
+  
   // Enable PTX, do not write CE high so radio will remain in standby I mode ( 130us max to transition to RX or TX instead of 1500us from powerUp )
   // PTX should use only 22uA of power
   write_register(CONFIG, ( read_register(CONFIG) ) & ~_BV(PRIM_RX) );
