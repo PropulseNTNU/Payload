@@ -1,17 +1,17 @@
-#!/usr/bin/env python3
 import RPi.GPIO as GPIO
 from lib_nrf24 import NRF24
 import time
 import spidev
 
 global linecounter
-numberOfSensors = 13 
+numberOfSensors = 3 
 
 
 def bleSetup():
 	global linecounter
 	linecounter = 1
 	GPIO.setmode(GPIO.BCM)
+	
 	pipes = [[0xE8, 0xE8, 0xF0, 0xF0, 0xE1], [0xF0, 0xF0, 0xF0, 0xF0, 0xE1]]
 
 	conn = NRF24(GPIO, spidev.SpiDev())
@@ -37,22 +37,22 @@ def sendMessage(message, conn):
 	conn.write(message)
 	print("Sent the message: {}".format(message))
 	time.sleep(1)
-	
+
 
 def recieveMessage(conn):
 	start = time.time()
 	conn.startListening()
-	
+
 	while not conn.available(0):
 	   time.sleep(1 / 100)
 	   if time.time() - start > 2:
 	       print("Timed out.")
 	       break
-	
+
 	receivedMessage = []
 	conn.read(receivedMessage, conn.getDynamicPayloadSize())
 	print("Received: {}".format(receivedMessage))
-	
+
 	print("Translating the receivedMessage into unicode characters")
 	string = ""
 	for n in receivedMessage:
@@ -61,32 +61,31 @@ def recieveMessage(conn):
 	        string += chr(n)
 	print("Out received message decodes to: {}".format(string))
 	conn.stopListening()
-	
+
 
 def sendSensorData(conn):
 	global linecounter
 	if linecounter < 0:
 		print("Error in linecount from file")
-		
-	try: 
-		file = open("/home/pi/Payload/src/sensory/sensorData.txt", 'r')
+
+	try:
+		file = open("testSensorData.txt", 'r')
 		textfile = file.readlines()[linecounter:]
 	except IOError:
 		print("Error in opening file")
 	file.close
-	
+
 	if textfile == []:
-		print("file is empty")												
+		print("file is empty")
 		return
-	element = 0	
+	element = 0
 	i = 0
 	sensorID = 0
 	while(element != '\n'):
 		message = []
 		element = textfile[0][i]
-		while(element != '\t' and element != '\n'):	
-			element = textfile[0][i]
-			
+		while(element != '\t' and element != '\n'):				element = textfile[0][i]
+
 			if element != '\t' and element != '\n':
 				message.append(element)
 			i += 1
@@ -113,6 +112,5 @@ def main():
 				
 		time.sleep(1)
 	
+main()
 
-#if  __name__ == "__main__":
-	#main()
