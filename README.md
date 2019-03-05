@@ -15,3 +15,9 @@ Go to: src/teensy/receiverPI/
 Add all the libraries in library folder before running code (SPI-master & RF24).
 
 Then run "receiverPI.ino" 
+
+
+## To start programs automatic from Raspberry PI
+
+> sudo nano .bashrc
+and declare filepath (with run command) 
