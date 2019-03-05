@@ -4,9 +4,10 @@
 #include<RF24.h>
 
 
+
 // CE, CSN pins
 RF24 conn(6, 7); 
-const int numberOfSensors = 4;
+const int numberOfSensors = 10;
 String fullMessage[numberOfSensors]; //message sent to the telemetry
 
 void initMessage(){
@@ -18,7 +19,7 @@ void initMessage(){
 void setupBle(void){
   while(!Serial);
   Serial.begin(9600);
-  SPI.setSCK(27); //JAN
+  SPI.setSCK(27);  
   conn.begin();
   
   conn.setPALevel(RF24_PA_MAX);
@@ -62,7 +63,7 @@ void messageFromPayload(){
   index = message.length();
   if(index > 0){
     uint8_t messageID = uint8_t(message[index - 1]) - 48; //ASCII fixing 
-    fullMessage[messageID] = String(message);//[int(messageID)] = String(message);
+    fullMessage[messageID] = String(message);
     Serial.println(fullMessage[messageID]);
       
   }
