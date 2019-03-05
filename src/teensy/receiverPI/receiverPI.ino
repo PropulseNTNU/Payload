@@ -6,7 +6,7 @@
 
 // CE, CSN pins
 RF24 conn(6, 7);
-_SPI.setSCK(27); 
+//SPI.setSCK(27); 
 const int numberOfSensors = 4;
 String fullMessage[numberOfSensors]; //message sent to the telemetry
 
