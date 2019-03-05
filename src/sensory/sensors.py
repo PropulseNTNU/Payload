@@ -13,6 +13,10 @@ import busio
 import adafruit_bme280
 import adafruit_bmp280
 
+#import sys
+#sys.path.append('../rasspberryPI/bluetooth/NRF24L01/')
+#import blePITeensy as blePITeensy
+
 ###################
 ###### IMU ########
 ###################
@@ -44,7 +48,7 @@ def IMU_init():
 
 
 
-file = open("cockballs.txt","a")
+file = open("/home/pi/Payload/src/sensory/sensorData.txt","a")
 file.write("timestamp\troll\tpitch\tyaw\tacceleration x\tacceleration y\tacceleration z\tcompass x\tcompass y\tcompass z\ttemperature\thumidity\taltitude\n")
 # Vibration = acceleration z
 
@@ -108,9 +112,12 @@ def Read_BMP():
 
 if  __name__ == "__main__":
     IMU_init()
+    #conn = blePITeensy.bleSetup()
     #bmp280_init()
     while True:
         if imu.IMURead():
             Read_IMU()
             file.write("\n")
+            #blePITeensy.sendSensorData(conn)
+        
         time.sleep(4/1000)
