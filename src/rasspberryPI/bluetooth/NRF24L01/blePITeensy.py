@@ -5,7 +5,7 @@ import time
 import spidev
 
 global linecounter
-numberOfSensors = 13 
+numberOfSensors = 10 
 
 
 def bleSetup():
@@ -100,7 +100,7 @@ def sendSensorData(conn):
 		
 		
 		else:
-			message.append(0)
+			message.append("-")
 			message.append(str(sensorID))
 				
 		while len(message) < 32:
