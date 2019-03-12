@@ -51,9 +51,9 @@ def recieveMessage(conn):
 	
 	receivedMessage = []
 	conn.read(receivedMessage, conn.getDynamicPayloadSize())
-	print("Received: {}".format(receivedMessage))
+	print("Received: {}".format(receivedMessage)) 
 	
-	print("Translating the receivedMessage into unicode characters")
+	print("Translating the receivedMessage into unicode characters") 
 	string = ""
 	for n in receivedMessage:
 		# Decode into standard unicode set
@@ -69,7 +69,7 @@ def sendSensorData(conn):
 		print("Error in linecount from file")
 		
 	try: 
-		file = open("/home/pi/Payload/src/sensory/sensorData.txt", 'r')
+		file = open("/home/pi/Payload/src/sensory/Data.txt", 'r')
 		textfile = file.readlines()[linecounter:]
 	except IOError:
 		print("Error in opening file")
@@ -80,7 +80,7 @@ def sendSensorData(conn):
 		return
 	element = 0	
 	i = 0
-	sensorID = 0
+	sensorID = 1
 	while(element != '\n'):
 		message = []
 		element = textfile[0][i]
@@ -90,8 +90,19 @@ def sendSensorData(conn):
 			if element != '\t' and element != '\n':
 				message.append(element)
 			i += 1
-		stringtoint = sensorID
-		message.append(str(sensorID))
+		
+		stringtoint = str(sensorID)
+		if sensorID > 9:
+			firstDigit = stringtoint[0]
+			secondDigit = stringtoint[1]
+			message.append(firstDigit)
+			message.append(secondDigit)
+		
+		
+		else:
+			message.append(0)
+			message.append(str(sensorID))
+				
 		while len(message) < 32:
 				message.append(0)
 		
@@ -114,5 +125,5 @@ def main():
 		time.sleep(1)
 	
 
-#if  __name__ == "__main__":
-	#main()
+if  __name__ == "__main__":
+	main()
