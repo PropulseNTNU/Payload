@@ -639,7 +639,7 @@ bool RF24::begin(void)
 
   // check for connected module and if this is a p nRF24l01 variant
   //
-  if( setDaStaRate( RF24_250KBPS ) )
+  if( setDataRate( RF24_250KBPS ) )
   {
     p_variant = true ;
   }
