@@ -10,7 +10,7 @@ void initMessage(double* data, int numberOfSensors){
   }  
 }
 
-void setupBle(double* data, int NUM_SENSORS){
+int setupBle(double* data, int NUM_SENSORS){
   Serial.begin(9600);
   SPI.setSCK(SCK_PIN);  
   conn.begin();
@@ -23,7 +23,8 @@ void setupBle(double* data, int NUM_SENSORS){
 
   conn.enableDynamicPayloads();
   conn.powerUp();
-  initMessage(data, NUM_SENSORS);    
+  initMessage(data, NUM_SENSORS);
+  return 1;    
 }
 
 

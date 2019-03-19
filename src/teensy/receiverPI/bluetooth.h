@@ -13,7 +13,7 @@
 
 void initMessage(double* data, int NUM_SENSORS);
 
-void setupBle(double* data, int NUM_SENSORS);
+int setupBle(double* data, int NUM_SENSORS);
 
 char* retriveMessageBle();
 
