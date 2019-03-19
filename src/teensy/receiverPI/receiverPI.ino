@@ -1,7 +1,6 @@
 //SendReceive.ino
 
 #include "bluetooth.h"
-#include "sensorsFromPayload.h"
 
 const int NUM_SENSORS = NUMBER_OF_SENSORS - 1;
 double payloadData[NUM_SENSORS]; //message sent to the telemetry
@@ -22,10 +21,7 @@ void setup(void){
 }
 
 void loop(void){
-  if(!(messageFromPayload(payloadData))){
-    Serial.println("No reading");;
-  }
-  
+  updateDataFromBle(payloadData);
   //Serial.println(payloadData[0]);
 }
 

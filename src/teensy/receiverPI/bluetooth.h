@@ -3,6 +3,7 @@
 
 #include <SPI.h>
 #include <RF24.h>
+#include "sensorsFromPayload.h"
 
 #define LED_pin 13
 #define SCK_PIN 27
@@ -18,8 +19,9 @@ char* retriveMessageBle();
 
 void sendMessage(const char message);
 
-/* Updates the sensor array with values from bluetooth. */
-
+/* Inerts data from payload(ble) in data array. */
 int messageFromPayload(double* data);
+
+void updateDataFromBle(double* data);
 
 #endif

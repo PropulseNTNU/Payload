@@ -1,5 +1,6 @@
 #include "bluetooth.h"
 
+
 RF24 conn(CE_PIN, CSN_PIN); 
 
 
@@ -10,6 +11,7 @@ void initMessage(double* data, int numberOfSensors){
 }
 
 void setupBle(double* data, int NUM_SENSORS){
+  Serial.begin(9600);
   SPI.setSCK(SCK_PIN);  
   conn.begin();
   
@@ -70,5 +72,15 @@ int messageFromPayload(double* data){
       
   delay(200);
   return 0;
+}
+
+void updateDataFromBle(double* data){
+  for(int i = 0; i < (NUMBER_OF_SENSORS - 1); i++){
+    int checkReading = messageFromPayload(data);
+    if(!(checkReading)){
+      Serial.println("No reading");;
+    }
+  }
+
 }
 
