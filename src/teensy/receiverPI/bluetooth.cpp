@@ -1,21 +1,16 @@
-
-
 #include "bluetooth.h"
 
+
 RF24 conn(CE_PIN, CSN_PIN); 
-const int numberOfSensors = 10;
-String fullMessage[numberOfSensors]; //message sent to the telemetry
 
 
-void initMessage(){
+void initMessage(double* data, int numberOfSensors){
   for(int i = 0; i < numberOfSensors; i++){
-    fullMessage[i] = "0";
+    data[i] = 0.0;
   }  
 }
 
-
-void setupBle(){
-  while(!Serial);
+void setupBle(double* data, int NUM_SENSORS){
   Serial.begin(9600);
   SPI.setSCK(SCK_PIN);  
   conn.begin();
@@ -28,8 +23,7 @@ void setupBle(){
 
   conn.enableDynamicPayloads();
   conn.powerUp();
-  initMessage();
-  Serial.println("Bluetooth setup done");
+  initMessage(data, NUM_SENSORS);    
 }
 
 
@@ -50,38 +44,43 @@ char* retriveMessageBle(){
 
 
 void sendMessage(const char message){
-  Serial.println("sending");
-  Serial.println(message);
-  char text[] = "test1";
-  conn.write(&text, sizeof(text));
+  conn.write(&message, sizeof(message));
   delay(1000);
 }
 
 
-//NEEDS MODIFYING
-void messageFromPayload(){
-  String message =  String(retriveMessageBle());
+int messageFromPayload(double* data){
+  char* message =  (retriveMessageBle());
   int index = 0;
-  index = message.length();
-  String data; 
-  digitalWrite(LED_pin, LOW);
-  if(index > 0){
-    uint8_t messageIDFirstDigit = uint8_t(message[index-2]) - 48; //ASCII fixing
+  index = strlen(message);
+  String messageID = ""; 
+  if(index > 2){
+    uint8_t messageIDFirstDigit = uint8_t(message[index-2])- 48; //ASCII fixing
     uint8_t messageIDSecondDigit = uint8_t(message[index-1]) - 48; //ASCII fixing
-   
-    Serial.println("ID: ");
-    Serial.println(messageIDFirstDigit);
-    Serial.println(messageIDSecondDigit);
-    Serial.println("Message: ");
-    Serial.println(message);
-    //fullMessage[messageID] = String(message);
-    //Serial.println(fullMessage[10]); 
-    digitalWrite(LED_pin, HIGH);
-    delay(200);
-         
+    messageID = String(messageIDFirstDigit) + String(messageIDSecondDigit);
+    
+    if(messageIDFirstDigit == 253){ //ASCII fix removing '-'
+      messageID = String(messageIDSecondDigit);
+    }
+    message[index -2] = '\0';
+    double msg = atof(message);
+    int id = messageID.toInt(); 
+        
+    data[id] = msg;
+    return 1;
   }
-  Serial.println("No reading");    
+      
   delay(200);
+  return 0;
 }
 
+void updateDataFromBle(double* data){
+  for(int i = 0; i < (NUMBER_OF_SENSORS - 1); i++){
+    int checkReading = messageFromPayload(data);
+    if(!(checkReading)){
+      Serial.println("No reading");;
+    }
+  }
+
+}
 

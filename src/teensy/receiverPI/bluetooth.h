@@ -3,6 +3,7 @@
 
 #include <SPI.h>
 #include <RF24.h>
+#include "sensorsFromPayload.h"
 
 #define LED_pin 13
 #define SCK_PIN 27
@@ -10,15 +11,17 @@
 #define CSN_PIN 7
 
 
-void initMessage();
+void initMessage(double* data, int NUM_SENSORS);
 
-void setupBle();
+void setupBle(double* data, int NUM_SENSORS);
 
 char* retriveMessageBle();
 
 void sendMessage(const char message);
 
-void messageFromPayload();
+/* Inerts data from payload(ble) in data array. */
+int messageFromPayload(double* data);
 
+void updateDataFromBle(double* data);
 
 #endif
