@@ -22,6 +22,11 @@ void setup(void){
 
 void loop(void){
   updateDataFromBle(payloadData);
-  //Serial.println(payloadData[0]);
+   
+  //for testing
+  Serial.println("Data");
+  for(int i= 0; i < 13; i++){
+    Serial.println(payloadData[i]);
+  }
 }
 

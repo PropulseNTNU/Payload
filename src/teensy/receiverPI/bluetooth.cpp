@@ -80,6 +80,7 @@ void updateDataFromBle(double* data){
     if(!(checkReading)){
       Serial.println("No reading");;
     }
+    
   }
 
 }
