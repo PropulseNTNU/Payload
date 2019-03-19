@@ -10,15 +10,16 @@
 #define CSN_PIN 7
 
 
-void initMessage();
+void initMessage(double* data, int NUM_SENSORS);
 
-void setupBle();
+void setupBle(double* data, int NUM_SENSORS);
 
 char* retriveMessageBle();
 
 void sendMessage(const char message);
 
-void messageFromPayload();
+/* Updates the sensor array with values from bluetooth. */
 
+int messageFromPayload(double* data);
 
 #endif
