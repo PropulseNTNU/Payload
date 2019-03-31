@@ -10,9 +10,8 @@ import math
 #import matplotlib.animation as animation
 import board
 import busio
-import adafruit_bme280
-import adafruit_bmp280
 import adafruit_bme680
+import adafruit_mcp9808
 
 import sys
 sys.path.append('../rasspberryPI/bluetooth/NRF24L01/')
@@ -50,9 +49,9 @@ def IMU_init():
 
 
 file = open("/home/pi/Payload/src/sensory/Data.txt","a")
-#file.write("timestamp\troll\tpitch\tyaw\tacceleration x\tacceleration y\tacceleration z\tcompass x\tcompass y\tcompass z\ttemperature\thumidity\taltitude\tpressure\tgas\temprature_accurate_sensor\n")
+file.write("timestamp\troll\tpitch\tyaw\tacceleration x\tacceleration y\tacceleration z\tcompass x\tcompass y\tcompass z\ttemperature\thumidity\taltitude\tpressure\tgas\temprature_accurate_sensor\n")
 # Vibration = acceleration z
-
+#16 different outputs
 def Read_IMU():
     #Timestamp 
     ts = imu.getIMUData()['timestamp']
@@ -89,30 +88,9 @@ def Read_IMU():
 
 
 ####################
-####### BMP280 #####
-####################
-
-def BMP280_init(sea_level_pressure): # change this to match the location's pressure (hPa) at sea level
-    i2c = busio.I2C(board.SCL, board.SDA)
-    bme280 = adafruit_bme280.Adafruit_BME280_I2C(i2c)
-    bme280.sea_level_pressure = 1013.25
-
-
-
-
-
-
-
-
-
-####################
 ####### BME680 #####
 ####################
 
-
-
-
-sea_level_pressure = 1013.25
 
 def BME680_init(sea_level_pressure):
     i2c = busio.I2C(board.SCL, board.SDA)
@@ -131,37 +109,35 @@ def Read_BME680():
     file.write(str(temp) + "\t" + str(humidity) + "\t" + str(altitude) + "\t" + str(pressure) + '\t' + str(gas))
 
 
+###################
+##### MCP9808 #####
+###################
+
+def MCP9808_init():
+    i2c = busio.I2C(board.SCL, board.SDA)
+    mcp = adafruit_mcp9808.MCP9808(i2c)
 
 
 
+def Read_MCP9808():
+    ẗemp = mcp.temperature #deg celsius
+    file.write(str(temp) + '\t')
 
 
 
-
-
-
-
-
-
-
-
-def Read_BMP():
-    temp = bme280.temperature
-    humidity = bme280.humidity
-    altitude = bme280.altitude
-    file.write(str(temp) + '\t' + str(humidity) + '\t' + str(altitude) + '\t' + 0 + '\t')
 
 
 if  __name__ == "__main__":
+    sea_level_pressure = 1013.25
     IMU_init()
+    BME680_init(sea_level_pressure)
+    MCP9808_init()
     conn = blePITeensy.bleSetup()
-    #bmp280_init()
-    #bme680_init()
     while True:
         if imu.IMURead():
             Read_IMU()
-            #Read_BME680()
+            Read_BME680()
+            Read_MCP9808()
             file.write("\n")
             blePITeensy.sendSensorData(conn)
-        
         time.sleep(4/1000)
