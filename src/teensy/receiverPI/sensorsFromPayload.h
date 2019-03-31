@@ -11,11 +11,9 @@
  * Currently 13 sensor readings
 */
 
-enum sensorData { TIMESTAMP, TROLL, TPITCH, TYAW, 
+enum sensorDataBle { TIME, TROLL, TPITCH, TYAW, 
                  TACCELERATION_X, TACCELERATION_Y, TACCELERATION_Z,
                  TCOMPASS_X, TCOMPASS_Y, TCOMPASS_Z ,
-                 TEMPERATURE, THUMIDITY, TALTITUDE, NUMBER_OF_SENSORS};
-
-
+                 TEMPERATURES , THUMIDITY, TALTITUDE, NUMBER_OF_SENSORS};
 
 #endif
