@@ -6,15 +6,13 @@ import os.path
 import time
 from datetime import datetime
 import math
-#import matplotlib.pyplot as plt
-#import matplotlib.animation as animation
 import board
 import busio
 import adafruit_bme680
 import adafruit_mcp9808
 
 import sys
-sys.path.append('../rasspberryPI/bluetooth/NRF24L01/')
+sys.path.append('/home/pi/Payload/src/sensory/rasspberryPI/bluetooth/NRF24L01/')
 import blePITeensy as blePITeensy
 
 ###################
@@ -120,7 +118,7 @@ def MCP9808_init():
 
 
 def Read_MCP9808():
-    ẗemp = mcp.temperature #deg celsius
+    temp = mcp.temperature #deg celsius
     file.write(str(temp) + '\t')
 
 
@@ -133,6 +131,7 @@ if  __name__ == "__main__":
     BME680_init(sea_level_pressure)
     MCP9808_init()
     conn = blePITeensy.bleSetup()
+    message = list("Done")
     while True:
         if imu.IMURead():
             Read_IMU()

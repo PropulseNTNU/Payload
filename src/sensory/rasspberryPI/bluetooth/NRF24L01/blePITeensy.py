@@ -112,12 +112,12 @@ def sendSensorData(conn):
 	linecounter += 1
 	
 
-def main():
-	conn = bleSetup()
+#def main():
+#	conn = bleSetup()
 
-	message = list("Done")
+#	message = list("Done")
 	
-	while(1):
+#	while(1):
 		sendSensorData(conn)
 		#sendMessage(message, conn)
 		#recieveMessage(conn)
@@ -125,5 +125,5 @@ def main():
 		time.sleep(1)
 	
 
-if  __name__ == "__main__":
-	main()
+#if  __name__ == "__main__":
+#	main()
