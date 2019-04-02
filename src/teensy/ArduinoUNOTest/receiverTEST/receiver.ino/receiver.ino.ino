@@ -1,3 +1,5 @@
+//ARDUINO RECIEVER
+
 /*
 * Arduino Wireless Communication Tutorial
 *       Example 1 - Receiver Code
@@ -9,7 +11,6 @@
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
-//#define LED_pin 13
 #define CE_PIN 7
 #define CSN_PIN 8
 
@@ -30,5 +31,5 @@ void loop() {
     radio.read(&text, sizeof(text));
     Serial.println(text);
   }
-  Serial.println("Something");
+  //Serial.println("Something");
 }
