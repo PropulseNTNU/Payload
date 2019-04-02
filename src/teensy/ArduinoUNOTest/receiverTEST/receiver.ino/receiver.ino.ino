@@ -9,7 +9,12 @@
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
-RF24 radio(7, 10); // CE, CSN
+//#define LED_pin 13
+#define CE_PIN 7
+#define CSN_PIN 8
+
+// ce, csn pins
+RF24 radio(CE_PIN, CSN_PIN); 
 const byte address[6] = "00001";
 void setup() {
   Serial.begin(9600);
@@ -25,4 +30,5 @@ void loop() {
     radio.read(&text, sizeof(text));
     Serial.println(text);
   }
+  Serial.println("Something");
 }
