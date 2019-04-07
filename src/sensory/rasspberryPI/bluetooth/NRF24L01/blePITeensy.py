@@ -118,11 +118,11 @@ def sendSensorData(conn):
 #	message = list("Done")
 	
 #	while(1):
-		sendSensorData(conn)
+		#sendSensorData(conn)
 		#sendMessage(message, conn)
 		#recieveMessage(conn)
 				
-		time.sleep(1)
+		#time.sleep(1)
 	
 
 #if  __name__ == "__main__":
