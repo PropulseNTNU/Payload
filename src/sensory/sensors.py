@@ -8,12 +8,13 @@ from datetime import datetime
 import math
 import board
 import busio
+from busio import I2C 
 import adafruit_bme680
 import adafruit_mcp9808
 
-import sys
-sys.path.append('/home/pi/Payload/src/sensory/rasspberryPI/bluetooth/NRF24L01/')
-import blePITeensy as blePITeensy
+#import sys
+#sys.path.append('/home/pi/Payload/src/sensory/rasspberryPI/bluetooth/NRF24L01/')
+#import blePITeensy as blePITeensy
 
 ###################
 ###### IMU ########
@@ -89,9 +90,10 @@ def Read_IMU():
 ####### BME680 #####
 ####################
 
-
+#i2c = I2C(board.SCL, board.SDA)
+#bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c, debug=False)
 def BME680_init(sea_level_pressure):
-    i2c = busio.I2C(board.SCL, board.SDA)
+    i2c = I2C(board.SCL, board.SDA)
     bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c)
     bme680.sea_level_pressure = sea_level_pressure
 
@@ -99,6 +101,8 @@ def BME680_init(sea_level_pressure):
 
 
 def Read_BME680():
+    i2c = busio.I2C(board.SCL, board.SDA)
+    bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c)
     temp = bme680.temperature
     humidity = bme680.humidity
     altitude = bme680.altitude
@@ -118,6 +122,8 @@ def MCP9808_init():
 
 
 def Read_MCP9808():
+    i2c = busio.I2C(board.SCL, board.SDA)
+    mcp = adafruit_mcp9808.MCP9808(i2c)
     temp = mcp.temperature #deg celsius
     file.write(str(temp) + '\t')
 
@@ -128,9 +134,9 @@ def Read_MCP9808():
 if  __name__ == "__main__":
     sea_level_pressure = 1013.25
     IMU_init()
-    BME680_init(sea_level_pressure)
+    ##BME680_init(sea_level_pressure)
     MCP9808_init()
-    conn = blePITeensy.bleSetup()
+    #conn = blePITeensy.bleSetup()
     message = list("Done")
     while True:
         if imu.IMURead():
@@ -138,5 +144,5 @@ if  __name__ == "__main__":
             Read_BME680()
             Read_MCP9808()
             file.write("\n")
-            blePITeensy.sendSensorData(conn)
+            #blePITeensy.sendSensorData(conn)
         time.sleep(4/1000)

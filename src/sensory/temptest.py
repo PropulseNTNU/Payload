@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import board
 import busio
 import adafruit_mcp9808
