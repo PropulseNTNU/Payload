@@ -6,11 +6,19 @@ import spidev
 
 global linecounter
 numberOfSensors = 10 
+stringData = "/home/pi/Payload/src/sensory/Data.txt"
 
+def findNumberOfLines(fileName):
+	with open(fileName) as f:
+		for i, l in enumerate(f):
+			pass
+	return i + 2
 
 def bleSetup():
 	global linecounter
-	linecounter = 1
+	linecounter = findNumberOfLines(stringData)
+	print("Linecounter: ",linecounter)
+	#linecounter = 1
 	GPIO.setmode(GPIO.BCM)
 	pipes = [[0xE8, 0xE8, 0xF0, 0xF0, 0xE1], [0xF0, 0xF0, 0xF0, 0xF0, 0xE1]]
 
@@ -36,7 +44,7 @@ def bleSetup():
 def sendMessage(message, conn):
 	conn.write(message)
 	print("Sent the message: {}".format(message))
-	time.sleep(1)
+	time.sleep(1/100)
 	
 
 def recieveMessage(conn):
@@ -69,8 +77,11 @@ def sendSensorData(conn):
 		print("Error in linecount from file")
 		
 	try: 
-		file = open("/home/pi/Payload/src/sensory/Data.txt", 'r')
+		file = open(stringData, 'r')
+		print("Linecounter: ",linecounter)
 		textfile = file.readlines()[linecounter:]
+		
+		
 	except IOError:
 		print("Error in opening file")
 	file.close
@@ -81,12 +92,12 @@ def sendSensorData(conn):
 	element = 0	
 	i = 0
 	sensorID = 1
-	while(element != '\n'):
+	while(element != '\n' and i < len(textfile[0])):
 		message = []
 		element = textfile[0][i]
-		while(element != '\t' and element != '\n'):	
+		while(element != '\t' and element != '\n' and i < len(textfile[0])):	
 			element = textfile[0][i]
-			
+						
 			if element != '\t' and element != '\n':
 				message.append(element)
 			i += 1

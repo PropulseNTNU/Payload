@@ -47,14 +47,17 @@ def IMU_init():
 
 
 
+
 file = open("/home/pi/Payload/src/sensory/Data.txt","a")
-file.write("timestamp\troll\tpitch\tyaw\tacceleration x\tacceleration y\tacceleration z\tcompass x\tcompass y\tcompass z\ttemperature\thumidity\taltitude\tpressure\tgas\temprature_accurate_sensor\n")
+#file.write("timestamp\troll\tpitch\tyaw\tacceleration x\tacceleration y\tacceleration z\tcompass x\tcompass y\tcompass z\ttemperature\thumidity\taltitude\tpressure\tgas\temprature_accurate_sensor\n")
+file.write("reboot\n")
 # Vibration = acceleration z
 #16 different outputs
 def Read_IMU():
     #Timestamp 
-    ts = imu.getIMUData()['timestamp']
-    ts /= 1000
+    #ts = imu.getIMUData()['timestamp']
+    #ts /= 1000
+    ts = time.strftime("%H%M%S")
     file.write(str(ts) + "\t")
 
     # Fusion / Gyroscope data
@@ -92,10 +95,10 @@ def Read_IMU():
 
 #i2c = I2C(board.SCL, board.SDA)
 #bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c, debug=False)
-def BME680_init(sea_level_pressure):
-    i2c = I2C(board.SCL, board.SDA)
-    bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c)
-    bme680.sea_level_pressure = sea_level_pressure
+#def BME680_init(sea_level_pressure):
+#    i2c = I2C(board.SCL, board.SDA)
+#    bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c)
+#    bme680.sea_level_pressure = 1013.25 
 
 
 
@@ -103,11 +106,13 @@ def BME680_init(sea_level_pressure):
 def Read_BME680():
     i2c = busio.I2C(board.SCL, board.SDA)
     bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c)
+    bme680.sea_level_pressure = bme680.pressure
     temp = bme680.temperature
     humidity = bme680.humidity
     altitude = bme680.altitude
     pressure = bme680.pressure
     gas = bme680.gas 
+    print(str(pressure) + "\t" + str(altitude))
     file.write(str(temp) + "\t" + str(humidity) + "\t" + str(altitude) + "\t" + str(pressure) + '\t' + str(gas))
 
 
@@ -134,9 +139,9 @@ def Read_MCP9808():
 if  __name__ == "__main__":
     sea_level_pressure = 1013.25
     IMU_init()
-    ##BME680_init(sea_level_pressure)
+    BME680_init(sea_level_pressure)
     MCP9808_init()
-    conn = blePITeensy.bleSetup()
+    #conn = blePITeensy.bleSetup()
     message = list("Done")
     while True:
         if imu.IMURead():
@@ -144,5 +149,7 @@ if  __name__ == "__main__":
             Read_BME680()
             Read_MCP9808()
             file.write("\n")
-            blePITeensy.sendSensorData(conn)
+            #blePITeensy.sendSensorData(conn)
         time.sleep(4/1000)
+
+
