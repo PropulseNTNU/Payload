@@ -10,7 +10,7 @@ bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c, debug=False)
 
 # change this to match the location's pressure (hPa) at sea level
 bme680.sea_level_pressure = 1006.0
-file = open("/home/pi/payload/src/sensory/burning_data.txt","a")
+file = open("/home/pi/Payload/src/sensory/burning_data.txt","a")
 
 while True:
     ts = time.time()
