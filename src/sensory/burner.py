@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import datetime
 import time
 import board
 from busio import I2C
@@ -15,8 +16,8 @@ file = open("/home/pi/Payload/src/sensory/burning_data.txt","a")
 while True:
     ts = time.time()
     st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-    file.write("\ntimestamp: %d " % str(st))
-    print("\ntimestamp: %d " % str(stt))
+    file.write("\ntimestamp: %s " % st)
+    print("\ntimestamp: %s " % st)
     print("Temperature: %0.1f C" % bme680.temperature)
     file.write("Temperature: %0.1f C" % bme680.temperature)
     print("Gas: %d ohm" % bme680.gas)

@@ -141,7 +141,7 @@ if  __name__ == "__main__":
     IMU_init()
     BME680_init(sea_level_pressure)
     MCP9808_init()
-    #conn = blePITeensy.bleSetup()
+    conn = blePITeensy.bleSetup()
     message = list("Done")
     while True:
         if imu.IMURead():
@@ -149,7 +149,7 @@ if  __name__ == "__main__":
             Read_BME680()
             Read_MCP9808()
             file.write("\n")
-            #blePITeensy.sendSensorData(conn)
+            blePITeensy.sendSensorData(conn)
         time.sleep(4/1000)
 
 
