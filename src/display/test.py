@@ -7,7 +7,7 @@ plt.style.use('ggplot')
 #ts, roll,pitch,yaw,accel_x,accel_y,accel_z, comp_x, comp_y, comp_z,temp,humid,alti,pressure,gas,acc_temp = np.loadtxt('../sensory/Data.txt', delimiter='\t', unpack=True)#,usecols=(0,13))
 
 #new_x = time.strftime("%Y-%m-%d %H:%M:%S", x)
-arr = np.genfromtxt('../sensory/Data.txt', delimiter='\t', missing_values='',usemask=True)[:,:-1]
+arr = np.genfromtxt('../sensory/Data.txt', delimiter='\t', missing_values='',usemask=True, usecols=tuple(range(16)) )[:,:-1]
 fig,axes = plt.subplots(nrows=3,ncols=5,sharex=True)
 fig.suptitle("Payload 2019 data visualization", fontsize=26)
 axes[0,0].title.set_text('First Plot')
@@ -47,7 +47,7 @@ axes[1,2].plot (arr[1:,0],arr[1:,8])
 axes[2,2].plot (arr[1:,0],arr[1:,9])
 
 axes[0,3].plot (arr[1:,0],arr[1:,10],'--b',label='bme680')
-axes[0,3].plot (arr[1:,0],arr[1:,15],label='MCP980')
+#axes[0,3].plot (arr[1:,0],arr[1:,-1],label='MCP9808')
 axes[1,3].plot (arr[1:,0],arr[1:,11])
 axes[2,3].plot (arr[1:,0],arr[1:,12])
 
