@@ -75,7 +75,7 @@ def Read_data():
     
     i2c = busio.I2C(board.SCL, board.SDA)
     bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c)
-    bme680.sea_level_pressure = 1019
+    bme680.sea_level_pressure = 1018
     temp = bme680.temperature
     humidity = bme680.humidity
     altitude = bme680.altitude
@@ -98,7 +98,7 @@ if  __name__ == "__main__":
         if imu.IMURead():
             Read_data()
             blePITeensy.sendSensorData(conn)
-        file.write("\n")
-        time.sleep(40/1000)
+            file.write("\n")
+        time.sleep(4/1000)
 
 

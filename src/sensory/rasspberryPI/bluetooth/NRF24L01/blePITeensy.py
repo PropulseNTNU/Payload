@@ -9,6 +9,7 @@ numberOfSensors = 10
 stringData = "/home/pi/Payload/src/sensory/Data.txt"
 
 def findNumberOfLines(fileName):
+	i = 0
 	with open(fileName) as f:
 		for i, l in enumerate(f):
 			pass
