@@ -16,11 +16,6 @@ import sys
 sys.path.append('/home/pi/Payload/src/sensory/rasspberryPI/bluetooth/NRF24L01/')
 import blePITeensy as blePITeensy
 
-###################
-###### IMU ########
-###################
-
-
 
 def IMU_init():    
     global imu,s,SETTINGS_FILE
@@ -46,8 +41,6 @@ def IMU_init():
     print("Poll Intervall: %dmS\n" % poll_interval)
 
 
-
-
 file = open("/home/pi/Payload/src/sensory/Data.txt","a")
 #file.write("timestamp\troll\tpitch\tyaw\tacceleration x\tacceleration y\tacceleration z\tcompass x\tcompass y\tcompass z\ttemperature\thumidity\taltitude\tpressure\tgas\temprature_accurate_sensor\n")
 def Read_data():
@@ -63,7 +56,6 @@ def Read_data():
 
     #resetfusion
     imu.getGyro
-    #datetime.utcfromtimestamp(ts).strftime('%Y-%m-%dT%H:%M:%SZ')
 
     # Acceleration data, accely is spin, accelz is acceleration,
     accelx, accely, accelz = imu.getAccel()
@@ -77,80 +69,35 @@ def Read_data():
     compx = round(compx,2)
     compy = round(compy,2)
     compz = round(compz,2)
-    #print("compass: %s", str(compx))
     file.write(str(compx) + "\t" + str(compy) + "\t" + str(compz) + "\t")
-    #return True
     #time.sleep(poll_interval*1.0/1000.0)
 
     
     i2c = busio.I2C(board.SCL, board.SDA)
     bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c)
-    bme680.sea_level_pressure = 1013.25
+    bme680.sea_level_pressure = 1019
     temp = bme680.temperature
     humidity = bme680.humidity
     altitude = bme680.altitude
     pressure = bme680.pressure
     gas = bme680.gas 
-    print( "\n %s ",str(pressure),"\t altitude",str(altitude),"\t temperature", str(temp))
     file.write(str(temp) + "\t" + str(humidity) + "\t" + str(altitude) + "\t" + str(pressure) + '\t' + str(gas) + "\t")
 
     mcp = adafruit_mcp9808.MCP9808(i2c)
     ptemp = mcp.temperature #deg celsius
-    file.write(str(ptemp))
-
-
-####################
-####### BME680 #####
-####################
-
-
-
-def Read_BME680():
-    i2c = busio.I2C(board.SCL, board.SDA)
-    bme680 = adafruit_bme680.Adafruit_BME680_I2C(i2c)
-    bme680.sea_level_pressure = 1013.25
-    temp = bme680.temperature
-    humidity = bme680.humidity
-    altitude = bme680.altitude
-    pressure = bme680.pressure
-    gas = bme680.gas 
-    print( "\n %s ",str(pressure),"\t altitude",str(altitude),"\t temperature", str(temp))
-    file.write(str(temp) + "\t" + str(humidity) + "\t" + str(altitude) + "\t" + str(pressure) + '\t' + str(gas))
-
-
-###################
-##### MCP9808 #####
-###################
-
-def MCP9808_init():
-    i2c = busio.I2C(board.SCL, board.SDA)
-    mcp = adafruit_mcp9808.MCP9808(i2c)
-
-
-
-def Read_MCP9808():
-    i2c = busio.I2C(board.SCL, board.SDA)
-    mcp = adafruit_mcp9808.MCP9808(i2c)
-    temp = mcp.temperature #deg celsius
-    file.write(str(temp) + '\t')
-
+    file.write(str(ptemp) + "\t")
 
 
 
 
 if  __name__ == "__main__":
-    #sea_level_pressure = 1013.25
     IMU_init()
-    #BME680_init(sea_level_pressure)
-    #MCP9808_init()
-    #conn = blePITeensy.bleSetup()
+    conn = blePITeensy.bleSetup()
     #message = list("Done")
     while True:
         if imu.IMURead():
             Read_data()
-            #Read_BME680()
-            #Read_MCP9808()
-            #blePITeensy.sendSensorData(conn)
+            blePITeensy.sendSensorData(conn)
         file.write("\n")
         time.sleep(40/1000)
 
