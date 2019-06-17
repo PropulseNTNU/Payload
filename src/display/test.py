@@ -9,27 +9,26 @@ plt.style.use('ggplot')
 #new_x = time.strftime("%Y-%m-%d %H:%M:%S", x)
 arr = np.genfromtxt('../sensory/Data.txt', delimiter='\t', missing_values='',usemask=True, usecols=tuple(range(16)) )[:,:-1]
 fig,axes = plt.subplots(nrows=3,ncols=5,sharex=True)
-fig.suptitle("Payload 2019 data visualization", fontsize=26)
+fig.suptitle("Propulse NTNU Payload 2019", fontsize=26)
 axes[0,0].title.set_text('First Plot')
 axes[0,0].set_title('roll')
 axes[1,0].set_title('pitch')
 axes[2,0].set_title('yaw')
 
 #accel
-axes[0,1].set_title('X')
-axes[1,1].set_title('Y')
-axes[2,1].set_title('Z')
+axes[0,1].set_title('Vibration X')
+axes[1,1].set_title('Vibration Y')
+axes[2,1].set_title('Gravity')
 
 #compass
 #axes[:,2].set_title("Compass")
-axes[0,2].set_title('X')
-axes[1,2].set_title('Y')
-axes[2,2].set_title('Z')
+axes[0,2].set_title('Compass X')
+axes[1,2].set_title('Compass Y')
+axes[2,2].set_title('Compass Z')
 
 axes[0,3].set_title('temperature data')
 axes[1,3].set_title('humidity data')
 axes[2,3].set_title('altitude data')
-
 
 axes[0,4].set_title('pressure data')
 axes[1,4].set_title('gas data')
@@ -50,12 +49,11 @@ axes[0,3].plot (arr[1:,0],arr[1:,10],'--b',label='bme680')
 #axes[0,3].plot (arr[1:,0],arr[1:,-1],label='MCP9808')
 axes[1,3].plot (arr[1:,0],arr[1:,11])
 axes[2,3].plot (arr[1:,0],arr[1:,12])
-
 axes[0,4].plot (arr[1:,0],arr[1:,13])
 axes[1,4].plot (arr[1:,0],arr[1:,14])
 
 axes[0,3].legend(loc='upper right', frameon=False)
-
+fig.axes.set_ylim(0,50)
 
 figManager = plt.get_current_fig_manager()
 figManager.full_screen_toggle()
