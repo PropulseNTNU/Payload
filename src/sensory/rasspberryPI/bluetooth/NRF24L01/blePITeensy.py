@@ -5,7 +5,7 @@ import time
 import spidev
 
 global linecounter
-numberOfSensors = 10 
+numberOfSensors = 16 
 stringData = "/home/pi/Payload/src/sensory/Data.txt"
 
 def findNumberOfLines(fileName):
