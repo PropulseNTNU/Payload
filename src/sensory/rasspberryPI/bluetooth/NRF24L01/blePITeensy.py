@@ -5,7 +5,7 @@ import time
 import spidev
 
 global linecounter
-numberOfSensors = 16 
+numberOfSensors = 6 
 stringData = "/home/pi/Payload/src/sensory/Data.txt"
 
 def findNumberOfLines(fileName):
@@ -118,10 +118,12 @@ def sendSensorData(conn):
 		while len(message) < 32:
 				message.append(0)
 		
-		sensorID += 1
-		
 		if sensorID <= 5 or sensorID == 13:  
 			sendMessage(message, conn)
+		
+		sensorID += 1
+		
+		
 	
 	linecounter += 1
 	
