@@ -8,7 +8,7 @@ Go to: src/rasspberryPI/bluetooth/NRF24L01/
 
 Then run "blePITeensy.py" (in PI terminal: > python blePITeensy.py) 
 
-### Run on Tennesy 3.6
+### Run on Teensy 3.6
 
 Go to: src/teensy/receiverPI/
 
@@ -22,3 +22,10 @@ Then run "receiverPI.ino"
 > sudo nano .bashrc
 
 and declare filepath (with run command) 
+
+
+
+![IMU visualization](/home/marius/Development/Payload/2019-06-17-113045_1824x984_scrot.png)
+
+
+![Data](/home/marius/Development/Payload/flight_data.png)
